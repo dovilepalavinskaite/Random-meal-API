@@ -17,36 +17,35 @@ let proportions = [];
 
 // Function that accepts Random meal API and generates meal, ingredients, description and
 // cooking steps:
-function generateMeal(){
-	fetch('https://www.themealdb.com/api/json/v1/1/random.php')
-		.then((res) => res.json())
-		.then((data) => {
+async function generateMeal(){
+	const res = await fetch('https://www.themealdb.com/api/json/v1/1/random.php')
+		const data = await res.json()
 
-			// Generates ingredients:
-			let vals = Object.values(data.meals[0]);
-			Object.keys(data.meals[0]).forEach ((key, i) => {
-				if (key.startsWith("strIngred")) {
-					ingredients.push(vals[i]);
-				}
-			});
-
-			// Generates proportions for each ingredient:
-			Object.keys(data.meals[0]).forEach ((key, i) => {
-				if (key.startsWith("strMeas")) {
-					proportions.push(vals[i]);
-				}
-			});
-			printIngredients(ingredients);
-			printProportions(proportions);
-			img.setAttribute("src", data.meals[0].strMealThumb);
-			mealImg.appendChild(img);
-
-			// Inserts data into HTML:
-			mealName.innerHTML = data.meals[0].strMeal;
-			mealCat.innerHTML += data.meals[0].strCategory;
-			mealCuisine.innerHTML += data.meals[0].strArea;
-			mealInstucions.innerHTML = data.meals[0].strInstructions;
+		// Generates ingredients:
+		let vals = Object.values(data.meals[0]);
+		Object.keys(data.meals[0]).forEach ((key, i) => {
+			if (key.startsWith("strIngred")) {
+				ingredients.push(vals[i]);
+			}
 		});
+
+		// Generates proportions for each ingredient:
+		Object.keys(data.meals[0]).forEach ((key, i) => {
+			if (key.startsWith("strMeas")) {
+				proportions.push(vals[i]);
+			}
+		});
+		printIngredients(ingredients);
+		printProportions(proportions);
+		img.setAttribute("src", data.meals[0].strMealThumb);
+		mealImg.appendChild(img);
+
+		// Inserts data into HTML:
+		mealName.innerHTML = data.meals[0].strMeal;
+		mealCat.innerHTML += data.meals[0].strCategory;
+		mealCuisine.innerHTML += data.meals[0].strArea;
+		mealInstucions.innerHTML = data.meals[0].strInstructions;
+	
 }
 
 
