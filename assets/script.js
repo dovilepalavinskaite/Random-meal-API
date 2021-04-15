@@ -1,51 +1,54 @@
-// Variables from DOM:
 
-const mealPlace = document.querySelector("#random-meal");
+// Variables from DOM:
 const mealName = document.querySelector(".meal-name");
 const mealImg = document.querySelector(".meal-img");
 const mealCat = document.querySelector(".meal-categ");
 const mealCuisine = document.querySelector(".meal-cuisine");
 const mealIngred = document.querySelector(".meal-ingred");
 const mealInstucions = document.querySelector(".meal-instructions");
+const mealProportions = document.querySelector(".meal-proportions");
 const btn = document.querySelector(".meal-btn");
 
 const img = document.createElement('IMG');
 
+// Empty array for ingredients:
 let ingredients = [];
+let proportions = [];
 
-// Function that accepts Random meal API and generates response:
-
-function generateMeal() {
+// Function that accepts Random meal API and generates meal, ingredients, description and
+// cooking steps:
+function generateMeal(){
 	fetch('https://www.themealdb.com/api/json/v1/1/random.php')
 		.then((res) => res.json())
 		.then((data) => {
-			// Generates image from API:
-			img.setAttribute("src", data.meals[0].strMealThumb);
-			mealImg.appendChild(img);
 
-			mealName.innerHTML = data.meals[0].strMeal
-			mealCat.innerHTML += data.meals[0].strCategory
-			mealCuisine.innerHTML += data.meals[0].strArea;
-			mealInstucions.innerHTML = data.meals[0].strInstructions
-		})
-}
-
-// Generates ingredients from the Object to the new array:
-
-function generateIngredients(){
-	fetch('https://www.themealdb.com/api/json/v1/1/random.php')
-		.then((res) => res.json())
-		.then((data) => {
+			// Generates ingredients:
 			let vals = Object.values(data.meals[0]);
 			Object.keys(data.meals[0]).forEach ((key, i) => {
 				if (key.startsWith("strIngred")) {
 					ingredients.push(vals[i]);
-				};
-			})
+				}
+			});
+
+			// Generates proportions for each ingredient:
+			Object.keys(data.meals[0]).forEach ((key, i) => {
+				if (key.startsWith("strMeas")) {
+					proportions.push(vals[i]);
+				}
+			});
 			printIngredients(ingredients);
-			console.log(data)
-		})
+			printProportions(proportions);
+			img.setAttribute("src", data.meals[0].strMealThumb);
+			mealImg.appendChild(img);
+
+			// Inserts data into HTML:
+			mealName.innerHTML = data.meals[0].strMeal;
+			mealCat.innerHTML += data.meals[0].strCategory;
+			mealCuisine.innerHTML += data.meals[0].strArea;
+			mealInstucions.innerHTML = data.meals[0].strInstructions;
+		});
 }
+
 
 // Creating ingredients list to HTML:
 
@@ -63,18 +66,34 @@ function printIngredients(arr) {
 	mealIngred.appendChild(list);
 }
 
+function printProportions(arr) {
+	//Creating list element:
+	let list = document.createElement('ul');
+
+	for (let i = 0; i < arr.length; i++) {
+		if(arr[i]){
+			let item = document.createElement('li');
+			item.appendChild(document.createTextNode(arr[i]));
+			list.appendChild(item);
+		}
+	}
+	mealProportions.appendChild(list);
+}
+
 
 // Generates meal and ingredients immediately:
 generateMeal();
-generateIngredients();
 printIngredients(ingredients);
+printProportions(proportions);
 
 // Generates meal when the button is pressed:
 btn.addEventListener('click', function() {
 	generateMeal();
 	ingredients = [];
 	mealIngred.innerHTML = "";
-	generateIngredients();
 	printIngredients(ingredients);
+	proportions = [];
+	mealProportions.innerHTML = "";
+	printProportions(proportions);
 });
 

@@ -4,6 +4,10 @@
 	box-sizing: border-box;
 }
 
+.display-flex {
+	display: flex;
+	justify-content: space-between;
+}
 
 body {
 	background: #2C3E50;  
@@ -50,8 +54,6 @@ span {
 }
 
 .meal-description {
-	display: flex;
-	justify-content: space-between;
 	margin-top: 30px;
 }
 
@@ -84,8 +86,6 @@ ul {
 
 li {
 	line-height: 2;
-	border-bottom: 1px solid #D0D0D0;
-	border-bottom-width: 50%;
 }
 
 .ingredients-heading {
